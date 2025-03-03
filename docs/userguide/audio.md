@@ -151,30 +151,30 @@ Here is aa simple example of using `AsyncStreamHandler`:
 
 === "Code"
     ``` py
-
-    from fastrtc import AsyncStreamHandler, wait_for_item
+    from fastrtc import AsyncStreamHandler, wait_for_item, Stream
     import asyncio
+    import numpy as np
 
     class AsyncEchoHandler(AsyncStreamHandler):
-        """Handler for the Gemini API"""
-        
+        """Simple Async Echo Handler"""
+
         def __init__(self) -> None:
-            super().__init__()
+            super().__init__(input_sample_rate=24000)
             self.queue = asyncio.Queue()
 
-        async def receive(self, frame: tuple[int, np.ndarray]) -> None: 
-            self.queue.put(frame)
+        async def receive(self, frame: tuple[int, np.ndarray]) -> None:
+            await self.queue.put(frame)
 
-        async def emit(self) -> None: # (2)
+        async def emit(self) -> None:
             return await wait_for_item(self.queue)
-        
+
         def copy(self):
             return AsyncEchoHandler()
-        
-        async def shutdown(self): # (3)
+
+        async def shutdown(self):
             pass
-        
-        def start_up(self) -> None: # (4)
+
+        async def start_up(self) -> None:
             pass
     ```
 

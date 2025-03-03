@@ -35,6 +35,7 @@ from numpy import typing as npt
 from fastrtc.utils import (
     AdditionalOutputs,
     DataChannel,
+    WebRTCError,
     create_message,
     current_channel,
     player_worker_decode,
@@ -459,6 +460,11 @@ class AudioCallback(AudioStreamTrack):
             if isinstance(self.event_handler, AsyncHandler):
                 callable = self.event_handler.emit
                 start_up = self.event_handler.start_up()
+                if not inspect.isawaitable(start_up):
+                    raise WebRTCError(
+                        "In AsyncStreamHandler, start_up must be a coroutine (async def)"
+                    )
+
             else:
                 callable = functools.partial(
                     loop.run_in_executor, None, self.event_handler_emit
