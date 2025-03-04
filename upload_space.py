@@ -95,7 +95,7 @@ def upload_space(dir_path: str):
 
     readme_path = path / "README.md"
 
-    if path.name not in NO_GRADIO_SPACE:
+    if path.name not in NO_GRADIO_SPACE and (path / "README_gradio.md").exists():
         try:
             # Upload Gradio version with modified README
             api.upload_folder(

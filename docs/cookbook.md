@@ -140,10 +140,8 @@ document.querySelectorAll('.tag-button').forEach(button => {
 
     <video width=98% src="https://github.com/user-attachments/assets/ddf39ef7-fa7b-417e-8342-de3b9e311891" controls style="text-align: center"></video>
 
-    [:octicons-arrow-right-24: Demo](https://huggingface.co/spaces/fastrtc/talk-to-claude)
+    [:octicons-arrow-right-24: Demo](https://huggingface.co/spaces/burtenshaw/coworking_agent/)
 
-    [:octicons-arrow-right-24: Gradio UI](https://huggingface.co/spaces/fastrtc/talk-to-claude-gradio)
-    
     [:octicons-code-16: Code](https://huggingface.co/spaces/burtenshaw/coworking_agent/blob/main/app.py)
 
 -   :speaking_head:{ .lg .middle } __Talk to Claude__
