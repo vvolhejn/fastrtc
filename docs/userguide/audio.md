@@ -3,7 +3,6 @@
 
 Typically, you want to run a python function whenever a user has stopped speaking. This can be done by wrapping a python generator with the `ReplyOnPause` class and passing it to the `handler` argument of the `Stream` object. The `ReplyOnPause` class will handle the voice detection and turn taking logic automatically!
 
-By default, the `ReplyOnPause` handler will allow you to interrupt the response at any time by speaking again. If you do not want to allow interruption, you can set the `can_interrupt` parameter to `False`.
 
 === "Code"
     ```python
@@ -35,14 +34,13 @@ By default, the `ReplyOnPause` handler will allow you to interrupt the response 
     You can also use an async generator with `ReplyOnPause`.
 
 !!! tip "Parameters"
-    You can customize the voice detection parameters by passing in `algo_options` and `model_options` to the `ReplyOnPause` class. Also, you can set the `can_interrupt` parameter to `False` to prevent the user from interrupting the response. By default, `can_interrupt` is `True`.
+    You can customize the voice detection parameters by passing in `algo_options` and `model_options` to the `ReplyOnPause` class.
     ```python
     from fastrtc import AlgoOptions, SileroVadOptions
 
     stream = Stream(
         handler=ReplyOnPause(
             response,
-            can_interrupt=True,
             algo_options=AlgoOptions(
                 audio_chunk_duration=0.6,
                 started_talking_threshold=0.2,
@@ -56,6 +54,27 @@ By default, the `ReplyOnPause` handler will allow you to interrupt the response 
         )
     )
     ```
+
+### Interruptions
+
+By default, the `ReplyOnPause` handler will allow you to interrupt the response at any time by speaking again. If you do not want to allow interruption, you can set the `can_interrupt` parameter to `False`.
+
+```python
+from fastrtc import Stream, ReplyOnPause
+
+stream = Stream(
+    handler=ReplyOnPause(
+        response,
+        can_interrupt=True,
+    )
+)
+```
+
+<video width=98% src="https://github.com/user-attachments/assets/dba68dd7-7444-439b-b948-59171067e850" controls style="text-align: center"></video>
+
+
+!!! tip "Muting Response Audio"
+    You can directly talk over the output audio and the interruption will still work. However, in these cases, the audio transcription may be incorrect. To prevent this, it's best practice to mute the output audio before talking over it.
 
 ## Reply On Stopwords
 

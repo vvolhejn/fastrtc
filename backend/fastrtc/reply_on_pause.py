@@ -116,7 +116,9 @@ class ReplyOnPause(StreamHandler):
         self.is_async = inspect.isasyncgenfunction(fn)
         self.event = Event()
         self.state = AppState()
-        self.generator: Generator[EmitType, None, None] | None = None
+        self.generator: (
+            Generator[EmitType, None, None] | AsyncGenerator[EmitType, None] | None
+        ) = None
         self.model_options = model_options
         self.algo_options = algo_options or AlgoOptions()
 
@@ -184,7 +186,28 @@ class ReplyOnPause(StreamHandler):
             self.event.set()
             if self.can_interrupt:
                 self.clear_queue()
+                self._close_generator()
                 self.generator = None
+
+    def _close_generator(self):
+        """Properly close the generator to ensure resources are released."""
+        if self.generator is None:
+            return
+
+        try:
+            if self.is_async:
+                # For async generators, we need to call aclose()
+                if hasattr(self.generator, "aclose"):
+                    asyncio.run_coroutine_threadsafe(
+                        cast(AsyncGenerator[EmitType, None], self.generator).aclose(),
+                        self.loop,
+                    ).result(timeout=1.0)  # Add timeout to prevent blocking
+            else:
+                # For sync generators, we can just exhaust it or close it
+                if hasattr(self.generator, "close"):
+                    cast(Generator[EmitType, None, None], self.generator).close()
+        except Exception as e:
+            logger.debug(f"Error closing generator: {e}")
 
     def reset(self):
         super().reset()

@@ -49,14 +49,17 @@ def response(
     )
 
     chatbot.append({"role": "assistant", "content": response_text})
-    yield AdditionalOutputs(chatbot)
 
-    for chunk in tts_client.text_to_speech.convert_as_stream(
-        text=response_text,  # type: ignore
-        voice_id="JBFqnCBsd6RMkjVDRZzb",
-        model_id="eleven_multilingual_v2",
-        output_format="pcm_24000",
+    for i, chunk in enumerate(
+        tts_client.text_to_speech.convert_as_stream(
+            text=response_text,  # type: ignore
+            voice_id="JBFqnCBsd6RMkjVDRZzb",
+            model_id="eleven_multilingual_v2",
+            output_format="pcm_24000",
+        )
     ):
+        if i == 0:
+            yield AdditionalOutputs(chatbot)
         audio_array = np.frombuffer(chunk, dtype=np.int16).reshape(1, -1)
         yield (24000, audio_array)
 
