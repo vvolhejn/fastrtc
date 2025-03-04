@@ -9,7 +9,7 @@ app_file: app.py
 pinned: false
 license: mit
 short_description: FastRTC Voice Agent with smolagents
-tags: [webrtc, websocket, gradio, secret|HF_TOKEN]
+tags: [webrtc, websocket, gradio, secret|HF_TOKEN, secret|TWILIO_ACCOUNT_SID, secret|TWILIO_AUTH_TOKEN]
 ---
 
 # Voice LLM Agent with Image Generation
