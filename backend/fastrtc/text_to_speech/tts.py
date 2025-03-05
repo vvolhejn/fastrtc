@@ -78,7 +78,6 @@ class KokoroFixedBatchSize:
         # Add remaining phonemes
         if phonemes:
             batched_phonemes.append(phonemes)
-        print(f"Batched phonemes: {len(batched_phonemes)}")
         return batched_phonemes
 
 
@@ -110,7 +109,6 @@ class KokoroTTSModel(TTSModel):
         sentences = re.split(r"(?<=[.!?])\s+", text.strip())
 
         for s_idx, sentence in enumerate(sentences):
-            print(f"Sentence {s_idx}: {sentence}")
             if not sentence.strip():
                 continue
 
