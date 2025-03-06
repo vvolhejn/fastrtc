@@ -101,12 +101,16 @@ class KokoroTTSModel(TTSModel):
         )
         return b, a
 
+    @staticmethod
+    def split_text(text: str) -> list[str]:
+        return re.split(r"(?<=[.!?])\s+", text.strip())
+
     async def stream_tts(
         self, text: str, options: KokoroTTSOptions | None = None
     ) -> AsyncGenerator[tuple[int, NDArray[np.float32]], None]:
         options = options or KokoroTTSOptions()
 
-        sentences = re.split(r"(?<=[.!?])\s+", text.strip())
+        sentences = self.split_text(text)
 
         for s_idx, sentence in enumerate(sentences):
             if not sentence.strip():
@@ -124,12 +128,17 @@ class KokoroTTSModel(TTSModel):
     def stream_tts_sync(
         self, text: str, options: KokoroTTSOptions | None = None
     ) -> Generator[tuple[int, NDArray[np.float32]], None, None]:
-        loop = asyncio.new_event_loop()
+        options = options or KokoroTTSOptions()
 
-        # Use the new loop to run the async generator
-        iterator = self.stream_tts(text, options).__aiter__()
-        while True:
-            try:
-                yield loop.run_until_complete(iterator.__anext__())
-            except StopAsyncIteration:
-                break
+        sentences = self.split_text(text)
+
+        for s_idx, sentence in enumerate(sentences):
+            if not sentence.strip():
+                continue
+
+            chunk = self.model.create(
+                sentence, voice=options.voice, speed=options.speed, lang=options.lang
+            )
+            if s_idx != 0:
+                yield chunk[1], np.zeros(chunk[1] // 7, dtype=np.float32)
+            yield chunk[1], chunk[0]
