@@ -36,6 +36,8 @@ class Body(BaseModel):
 class UIArgs(TypedDict):
     title: NotRequired[str]
     """Title of the demo"""
+    subtitle: NotRequired[str]
+    """Subtitle of the demo. Text will be centered and displayed below the title."""
     icon: NotRequired[str]
     """Icon to display on the button instead of the wave animation. The icon should be a path/url to a .svg/.png/.jpeg file."""
     icon_button_color: NotRequired[str]
@@ -192,6 +194,14 @@ class Stream(WebRTCConnectionMixin):
                 </h1>
                 """
                 )
+                if ui_args.get("subtitle"):
+                    gr.Markdown(
+                        f"""
+                <div style='text-align: center'>
+                {ui_args.get("subtitle")}
+                </div>
+                """
+                    )
                 with gr.Row():
                     with gr.Column():
                         if additional_input_components:
@@ -231,6 +241,14 @@ class Stream(WebRTCConnectionMixin):
                 </h1>
                 """
                 )
+                if ui_args.get("subtitle"):
+                    gr.Markdown(
+                        f"""
+                <div style='text-align: center'>
+                {ui_args.get("subtitle")}
+                </div>
+                """
+                    )
                 with gr.Row():
                     if additional_input_components:
                         with gr.Column():
@@ -271,6 +289,14 @@ class Stream(WebRTCConnectionMixin):
                 </h1>
                 """
                 )
+                if ui_args.get("subtitle"):
+                    gr.Markdown(
+                        f"""
+                <div style='text-align: center'>
+                {ui_args.get("subtitle")}
+                </div>
+                """
+                    )
                 with gr.Column(elem_classes=["my-column"]):
                     with gr.Group(elem_classes=["my-group"]):
                         image = WebRTC(
@@ -310,6 +336,14 @@ class Stream(WebRTCConnectionMixin):
                 </h1>
                 """
                 )
+                if ui_args.get("subtitle"):
+                    gr.Markdown(
+                        f"""
+                <div style='text-align: center'>
+                {ui_args.get("subtitle")}
+                </div>
+                """
+                    )
                 with gr.Row():
                     with gr.Column():
                         for component in additional_input_components:
@@ -354,6 +388,14 @@ class Stream(WebRTCConnectionMixin):
                 </h1>
                 """
                 )
+                if ui_args.get("subtitle"):
+                    gr.Markdown(
+                        f"""
+                <div style='text-align: center'>
+                {ui_args.get("subtitle")}
+                </div>
+                """
+                    )
                 with gr.Row():
                     with gr.Column():
                         with gr.Group():
@@ -397,6 +439,14 @@ class Stream(WebRTCConnectionMixin):
                 </h1>
                 """
                 )
+                if ui_args.get("subtitle"):
+                    gr.Markdown(
+                        f"""
+                <div style='text-align: center'>
+                    {ui_args.get("subtitle")}
+                </div>
+                """
+                    )
                 with gr.Row():
                     with gr.Column():
                         with gr.Group():
@@ -441,6 +491,14 @@ class Stream(WebRTCConnectionMixin):
                 </h1>
                 """
                 )
+                if ui_args.get("subtitle"):
+                    gr.Markdown(
+                        f"""
+                <div style='text-align: center'>
+                {ui_args.get("subtitle")}
+                </div>
+                """
+                    )
                 with gr.Row():
                     with gr.Column():
                         with gr.Group():

@@ -6,7 +6,7 @@ from .credentials import (
 from .reply_on_pause import AlgoOptions, ReplyOnPause, SileroVadOptions
 from .reply_on_stopwords import ReplyOnStopWords
 from .speech_to_text import MoonshineSTT, get_stt_model
-from .stream import Stream
+from .stream import Stream, UIArgs
 from .text_to_speech import KokoroTTSOptions, get_tts_model
 from .tracks import (
     AsyncAudioVideoStreamHandler,
@@ -62,4 +62,5 @@ __all__ = [
     "get_tts_model",
     "KokoroTTSOptions",
     "wait_for_item",
+    "UIArgs",
 ]
