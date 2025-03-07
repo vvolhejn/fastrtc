@@ -28,6 +28,7 @@ nav:
   - Cookbook: cookbook.md
   - Deployment: deployment.md
   - Advanced Configuration: advanced-configuration.md
+  - Speech-to-Text Gallery: speech_to_text_gallery.md
   - VAD Gallery: vad_gallery.md
   - Utils: utils.md
   - Frequently Asked Questions: faq.md

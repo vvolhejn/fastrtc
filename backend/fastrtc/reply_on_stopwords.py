@@ -13,7 +13,7 @@ from .reply_on_pause import (
     ReplyFnGenerator,
     ReplyOnPause,
 )
-from .speech_to_text import get_stt_model
+from .speech_to_text import get_stt_model, stt_for_chunks
 from .utils import audio_to_float32, create_message
 
 logger = logging.getLogger(__name__)
@@ -105,10 +105,9 @@ class ReplyOnStopWords(ReplyOnPause):
                 dur_vad, chunks = self.model.vad(
                     (16000, state.post_stop_word_buffer),
                     self.model_options,
-                    return_chunks=True,
                 )
-                text = self.stt_model.stt_for_chunks(
-                    (16000, state.post_stop_word_buffer), chunks
+                text = stt_for_chunks(
+                    self.stt_model, (16000, state.post_stop_word_buffer), chunks
                 )
                 logger.debug(f"STT: {text}")
                 state.stop_word_detected = self.stop_word_detected(text)

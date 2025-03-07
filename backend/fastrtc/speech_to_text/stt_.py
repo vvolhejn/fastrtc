@@ -15,12 +15,6 @@ curr_dir = Path(__file__).parent
 class STTModel(Protocol):
     def stt(self, audio: tuple[int, NDArray[np.int16 | np.float32]]) -> str: ...
 
-    def stt_for_chunks(
-        self,
-        audio: tuple[int, NDArray[np.int16 | np.float32]],
-        chunks: list[AudioChunk],
-    ) -> str: ...
-
 
 class MoonshineSTT(STTModel):
     def __init__(
@@ -49,19 +43,6 @@ class MoonshineSTT(STTModel):
         tokens = self.model.generate(audio_np)
         return self.tokenizer.decode_batch(tokens)[0]
 
-    def stt_for_chunks(
-        self,
-        audio: tuple[int, NDArray[np.int16 | np.float32]],
-        chunks: list[AudioChunk],
-    ) -> str:
-        sr, audio_np = audio
-        return " ".join(
-            [
-                self.stt((sr, audio_np[chunk["start"] : chunk["end"]]))
-                for chunk in chunks
-            ]
-        )
-
 
 @lru_cache
 def get_stt_model(
@@ -79,3 +60,17 @@ def get_stt_model(
     m.stt((16000, audio))
     print(click.style("INFO", fg="green") + ":\t  STT model warmed up.")
     return m
+
+
+def stt_for_chunks(
+    stt_model: STTModel,
+    audio: tuple[int, NDArray[np.int16 | np.float32]],
+    chunks: list[AudioChunk],
+) -> str:
+    sr, audio_np = audio
+    return " ".join(
+        [
+            stt_model.stt((sr, audio_np[chunk["start"] : chunk["end"]]))
+            for chunk in chunks
+        ]
+    )
