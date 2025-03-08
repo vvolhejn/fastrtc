@@ -167,6 +167,10 @@ class VideoCallback(VideoStreamTrack):
             logger.debug("exception %s", e)
             exec = traceback.format_exc()
             logger.debug("traceback %s", exec)
+            if isinstance(e, WebRTCError):
+                raise e
+            else:
+                raise WebRTCError(str(e)) from e
 
 
 class StreamHandlerBase(ABC):
