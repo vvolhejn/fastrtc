@@ -65,6 +65,7 @@ def _send_log(message: str, type: str) -> None:
             )
         )
 
+    print("current_channel", current_channel.get())
     if channel := current_channel.get():
         try:
             loop = asyncio.get_running_loop()

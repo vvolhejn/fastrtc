@@ -588,11 +588,11 @@ class ServerToClientVideo(VideoStreamTrack):
         try:
             pts, time_base = await self.next_timestamp()
             await self.args_set.wait()
+            current_channel.set(self.channel)
             if self.generator is None:
                 self.generator = cast(
                     Generator[Any, None, Any], self.event_handler(*self.latest_args)
                 )
-                current_channel.set(self.channel)
             try:
                 next_array, outputs = split_output(next(self.generator))
                 if (
@@ -613,7 +613,11 @@ class ServerToClientVideo(VideoStreamTrack):
         except Exception as e:
             logger.debug("exception %s", e)
             exec = traceback.format_exc()
-            logger.debug("traceback %s ", exec)
+            logger.debug("traceback %s %s", e, exec)
+            if isinstance(e, WebRTCError):
+                raise e
+            else:
+                raise WebRTCError(str(e)) from e
 
 
 class ServerToClientAudio(AudioStreamTrack):
@@ -705,6 +709,10 @@ class ServerToClientAudio(AudioStreamTrack):
             logger.debug("exception %s", e)
             exec = traceback.format_exc()
             logger.debug("traceback %s", exec)
+            if isinstance(e, WebRTCError):
+                raise e
+            else:
+                raise WebRTCError(str(e)) from e
 
     def stop(self):
         logger.debug("audio-to-client stop callback")
