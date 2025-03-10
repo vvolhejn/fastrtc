@@ -23,6 +23,7 @@ from .tracks import HandlerType, StreamHandlerImpl
 from .webrtc import WebRTC
 from .webrtc_connection_mixin import WebRTCConnectionMixin
 from .websocket import WebSocketHandler
+from .utils import RTCConfigurationCallable
 
 logger = logging.getLogger(__name__)
 
@@ -61,7 +62,7 @@ class Stream(WebRTCConnectionMixin):
         concurrency_limit: int | None | Literal["default"] = "default",
         time_limit: float | None = None,
         rtp_params: dict[str, Any] | None = None,
-        rtc_configuration: dict[str, Any] | None | Callable[[], dict[str, Any]] = None,
+        rtc_configuration: RTCConfigurationCallable | None = None,
         additional_inputs: list[Component] | None = None,
         additional_outputs: list[Component] | None = None,
         ui_args: UIArgs | None = None,

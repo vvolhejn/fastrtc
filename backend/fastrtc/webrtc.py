@@ -30,6 +30,7 @@ from .tracks import (
     StreamHandlerImpl,
     VideoEventHandler,
 )
+from .utils import RTCConfigurationCallable
 from .webrtc_connection_mixin import WebRTCConnectionMixin
 
 if TYPE_CHECKING:
@@ -81,7 +82,7 @@ class WebRTC(Component, WebRTCConnectionMixin):
         render: bool = True,
         key: int | str | None = None,
         mirror_webcam: bool = True,
-        rtc_configuration: dict[str, Any] | None | Callable[[], dict[str, Any]] = None,
+        rtc_configuration: dict[str, Any] | None | RTCConfigurationCallable = None,
         track_constraints: dict[str, Any] | None = None,
         time_limit: float | None = None,
         mode: Literal["send-receive", "receive", "send"] = "send-receive",
@@ -355,12 +356,8 @@ class WebRTC(Component, WebRTCConnectionMixin):
         try:
             if inspect.isfunction(self.rtc_configuration):
                 if inspect.iscoroutinefunction(self.rtc_configuration):
-                    print("coroutine")
-                    print("config", await self.rtc_configuration())
                     return await self.rtc_configuration()
                 else:
-                    print("sync")
-                    print("config", anyio.to_thread.run_sync(self.rtc_configuration))
                     return anyio.to_thread.run_sync(self.rtc_configuration)
             else:
                 return self.rtc_configuration
