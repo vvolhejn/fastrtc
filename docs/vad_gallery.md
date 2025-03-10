@@ -105,4 +105,4 @@ document.querySelectorAll('.tag-button').forEach(button => {
     stream.ui.launch()
     ```
 
-3. Open a [PR](https://github.com/freddyaboulton/fastrtc/edit/main/docs/vad_gallery.md)to add your model to the gallery! Ideally you model package should be pip installable so other can try it out easily.
+3. Open a [PR](https://github.com/freddyaboulton/fastrtc/edit/main/docs/vad_gallery.md) to add your model to the gallery! Ideally you model package should be pip installable so other can try it out easily.
