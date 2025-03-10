@@ -445,4 +445,5 @@ RTCConfigurationCallable = (
         [str | None, str | None, str | None],
         Coroutine[dict[str, Any], Any, dict[str, Any]],
     ]
+    | dict[str, Any]
 )
