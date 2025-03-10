@@ -80,3 +80,38 @@ document.querySelectorAll('.tag-button').forEach(button => {
     [:octicons-arrow-right-24: Demo](Your demo here)
     
     [:octicons-code-16: Repository](Code here)
+
+</div>
+
+## How to add your own STT model
+
+1. Your model can be implemented in **any** framework you want but it must implement the `STTModel` protocol.
+
+    ```python
+    class STTModel(Protocol):
+        def stt(self, audio: tuple[int, NDArray[np.int16 | np.float32]]) -> str: ...
+    ```
+
+    * The `stt` method should take in an audio tuple `(sample_rate, audio_array)` and return a string of the transcribed text.
+
+    * The `audio` tuple should be of the form `(sample_rate, audio_array)` where `sample_rate` is the sample rate of the audio array and `audio_array` is a numpy array of the audio data. It can be of type `np.int16` or `np.float32`.
+
+2. Once you have your model implemented, you can use it in your handler!
+
+    ```python
+    from fastrtc import Stream, AdditionalOutputs, ReplyOnPause
+    from your_model import YourModel
+
+    model = YourModel() # implement the STTModel protocol
+
+    def echo(audio):
+        text = model.stt(audio)
+        yield AdditionalOutputs(text)
+
+    stream = Stream(ReplyOnPause(echo), mode="send-receive", modality="audio",
+                    additional_outputs=[gr.Textbox(label="Transcription")],
+                    additional_outputs_handler=lambda old,new:old + new)
+    stream.ui.launch()
+    ```
+
+3. Open a [PR](https://github.com/freddyaboulton/fastrtc/edit/main/docs/speech_to_text_gallery.md) to add your model to the gallery! Ideally you model package should be pip installable so other can try it out easily.
