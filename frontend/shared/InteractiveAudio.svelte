@@ -14,6 +14,7 @@
     VolumeHigh,
     Microphone,
   } from "@gradio/icons";
+  import MicrophoneMuted from "./MicrophoneMuted.svelte";
 
   import { start, stop } from "./webrtc_utils";
   import { get_devices, set_available_devices } from "./stream_utils";
@@ -80,6 +81,7 @@
   let selected_device: MediaDeviceInfo | null = null;
   let mic_accessed = false;
   let is_muted = false;
+  let is_mic_muted = false;
 
   const audio_source_callback = () => {
     if (mode === "send") return stream;
@@ -279,6 +281,14 @@
     }
   }
 
+  function toggleMuteMicrophone(): void {
+    if (stream && stream.getAudioTracks().length > 0) {
+      const audioTrack = stream.getAudioTracks()[0];
+      audioTrack.enabled = !audioTrack.enabled;
+      is_mic_muted = !audioTrack.enabled;
+    }
+  }
+
   $: if (stopword_recognized) {
     notification_sound.play();
   }
@@ -385,6 +395,24 @@
               <VolumeMuted />
             {:else}
               <VolumeHigh />
+            {/if}
+          </div>
+        </button>
+      {/if}
+      {#if stream_state === "open" && mode.includes("send")}
+        <button
+          class="mute-button"
+          on:click={toggleMuteMicrophone}
+          aria-label={is_mic_muted ? "unmute mic" : "mute mic"}
+        >
+          <div
+            class="icon"
+            style={`fill: ${icon_button_color}; stroke: ${icon_button_color}; color: ${icon_button_color};`}
+          >
+            {#if is_mic_muted}
+              <MicrophoneMuted />
+            {:else}
+              <Microphone />
             {/if}
           </div>
         </button>

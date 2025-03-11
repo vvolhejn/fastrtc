@@ -23,7 +23,10 @@
   export let width: number | undefined;
   export let server: {
     offer: (body: any) => Promise<any>;
+<<<<<<< HEAD
     turn: () => Promise<any>;
+=======
+>>>>>>> main
   };
 
   export let container = false;

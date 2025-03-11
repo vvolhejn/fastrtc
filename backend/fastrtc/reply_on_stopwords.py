@@ -156,4 +156,5 @@ class ReplyOnStopWords(ReplyOnPause):
             self.output_sample_rate,
             self.output_frame_size,
             self.input_sample_rate,
+            self.model,
         )
