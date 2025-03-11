@@ -51,10 +51,10 @@ export async function start(
   server_fn,
   webrtc_id,
   modality: "video" | "audio" = "video",
-  on_change_cb: (msg: "change" | "tick") => void = () => {},
+  on_change_cb: (msg: "change" | "tick") => void = () => { },
   rtp_params = {},
-  additional_message_cb: (msg: object) => void = () => {},
-  reject_cb: (msg: object) => void = () => {},
+  additional_message_cb: (msg: object) => void = () => { },
+  reject_cb: (msg: object) => void = () => { },
 ) {
   pc = createPeerConnection(pc, node);
   const data_channel = pc.createDataChannel("text");
@@ -108,7 +108,7 @@ export async function start(
 function make_offer(
   server_fn: any,
   body,
-  reject_cb: (msg: object) => void = () => {},
+  reject_cb: (msg: object) => void = () => { },
 ): Promise<object> {
   return new Promise((resolve, reject) => {
     server_fn(body).then((data) => {
@@ -127,7 +127,7 @@ async function negotiate(
   pc: RTCPeerConnection,
   server_fn: any,
   webrtc_id: string,
-  reject_cb: (msg: object) => void = () => {},
+  reject_cb: (msg: object) => void = () => { },
 ): Promise<void> {
   return pc
     .createOffer()
@@ -142,8 +142,6 @@ async function negotiate(
           resolve();
         } else {
           const checkState = () => {
-            // Changed from checking for "gathering" to checking for any state other than "new"
-            // This allows us to proceed once we have at least one candidate
             if (pc.iceGatheringState !== "new") {
               console.debug("ice candidate gathered");
               pc.removeEventListener("icegatheringstatechange", checkState);
@@ -151,13 +149,6 @@ async function negotiate(
             }
           };
           pc.addEventListener("icegatheringstatechange", checkState);
-          // Add a timeout to proceed anyway after a short delay
-          // This ensures we don't wait indefinitely if gathering is slow
-          setTimeout(() => {
-            console.debug("ice gathering timeout reached");
-            pc.removeEventListener("icegatheringstatechange", checkState);
-            resolve();
-          }, 1000);
         }
       });
     })
