@@ -105,7 +105,11 @@ export async function start(
   return pc;
 }
 
-function make_offer(server_fn: any, body, reject_cb: (msg: object) => void = () => { }): Promise<object> {
+function make_offer(
+  server_fn: any,
+  body,
+  reject_cb: (msg: object) => void = () => { },
+): Promise<object> {
   return new Promise((resolve, reject) => {
     server_fn(body).then((data) => {
       console.debug("data", data);
@@ -131,30 +135,43 @@ async function negotiate(
       return pc.setLocalDescription(offer);
     })
     .then(() => {
-      // wait for ICE gathering to complete
+      // wait for at least one ICE candidate instead of complete gathering
       return new Promise<void>((resolve) => {
         console.debug("ice gathering state", pc.iceGatheringState);
         if (pc.iceGatheringState === "complete") {
           resolve();
         } else {
           const checkState = () => {
-            if (pc.iceGatheringState === "complete") {
-              console.debug("ice complete");
+            // Changed from checking for "gathering" to checking for any state other than "new"
+            // This allows us to proceed once we have at least one candidate
+            if (pc.iceGatheringState !== "new") {
+              console.debug("ice candidate gathered");
               pc.removeEventListener("icegatheringstatechange", checkState);
               resolve();
             }
           };
           pc.addEventListener("icegatheringstatechange", checkState);
+          // Add a timeout to proceed anyway after a short delay
+          // This ensures we don't wait indefinitely if gathering is slow
+          setTimeout(() => {
+            console.debug("ice gathering timeout reached");
+            pc.removeEventListener("icegatheringstatechange", checkState);
+            resolve();
+          }, 1000);
         }
       });
     })
     .then(() => {
       var offer = pc.localDescription;
-      return make_offer(server_fn, {
-        sdp: offer.sdp,
-        type: offer.type,
-        webrtc_id: webrtc_id,
-      }, reject_cb);
+      return make_offer(
+        server_fn,
+        {
+          sdp: offer.sdp,
+          type: offer.type,
+          webrtc_id: webrtc_id,
+        },
+        reject_cb,
+      );
     })
     .then((response) => {
       return response;

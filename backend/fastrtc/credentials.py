@@ -70,7 +70,7 @@ async def get_cloudflare_turn_credentials(
                 "https://turn.fastrtc.org/credentials",
                 headers={"Authorization": f"Bearer {hf_token}"},
             )
-            return {**response.json(), "iceTransportPolicy": "relay"}
+            return response.json()
     else:
         if turn_key_id is None or turn_key_api_token is None:
             turn_key_id = os.getenv("CLOUDFLARE_TURN_KEY_ID")
@@ -88,8 +88,8 @@ async def get_cloudflare_turn_credentials(
                 },
                 json={"ttl": ttl},
             )
-            if response.status_code == 200:
-                return {**response.json(), "iceTransportPolicy": "relay"}
+            if response.is_success:
+                return response.json()
             else:
                 raise Exception(
                     f"Failed to get TURN credentials: {response.status_code} {response.text}"
