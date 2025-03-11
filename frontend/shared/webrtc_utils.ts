@@ -51,10 +51,10 @@ export async function start(
   server_fn,
   webrtc_id,
   modality: "video" | "audio" = "video",
-  on_change_cb: (msg: "change" | "tick") => void = () => { },
+  on_change_cb: (msg: "change" | "tick") => void = () => {},
   rtp_params = {},
-  additional_message_cb: (msg: object) => void = () => { },
-  reject_cb: (msg: object) => void = () => { },
+  additional_message_cb: (msg: object) => void = () => {},
+  reject_cb: (msg: object) => void = () => {},
 ) {
   pc = createPeerConnection(pc, node);
   const data_channel = pc.createDataChannel("text");
@@ -108,7 +108,7 @@ export async function start(
 function make_offer(
   server_fn: any,
   body,
-  reject_cb: (msg: object) => void = () => { },
+  reject_cb: (msg: object) => void = () => {},
 ): Promise<object> {
   return new Promise((resolve, reject) => {
     server_fn(body).then((data) => {
@@ -127,7 +127,7 @@ async function negotiate(
   pc: RTCPeerConnection,
   server_fn: any,
   webrtc_id: string,
-  reject_cb: (msg: object) => void = () => { },
+  reject_cb: (msg: object) => void = () => {},
 ): Promise<void> {
   return pc
     .createOffer()
