@@ -16,6 +16,7 @@ from fastrtc import (
     get_stt_model,
     get_twilio_turn_credentials,
 )
+from fastrtc.reply_on_over import ReplyOnOver
 from gradio.utils import get_space
 from pydantic import BaseModel
 
@@ -65,9 +66,8 @@ def response(
 chatbot = gr.Chatbot(type="messages", value=[])
 state = gr.State(value=[])
 stream = Stream(
-    ReplyOnStopWords(
+    ReplyOnOver(
         response,  # type: ignore
-        stop_words=["computer"],
         input_sample_rate=16000,
     ),
     mode="send",
