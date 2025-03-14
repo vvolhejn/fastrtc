@@ -1,7 +1,7 @@
 import asyncio
 import logging
 import re
-from typing import Literal
+from typing import Callable, Literal
 
 import numpy as np
 
@@ -33,6 +33,7 @@ class ReplyOnStopWords(ReplyOnPause):
         self,
         fn: ReplyFnGenerator,
         stop_words: list[str],
+        startup_fn: Callable | None = None,
         algo_options: AlgoOptions | None = None,
         model_options: ModelOptions | None = None,
         can_interrupt: bool = True,
@@ -45,6 +46,7 @@ class ReplyOnStopWords(ReplyOnPause):
         super().__init__(
             fn,
             algo_options=algo_options,
+            startup_fn=startup_fn,
             model_options=model_options,
             can_interrupt=can_interrupt,
             expected_layout=expected_layout,
@@ -149,6 +151,7 @@ class ReplyOnStopWords(ReplyOnPause):
         return ReplyOnStopWords(
             self.fn,
             self.stop_words,
+            self.startup_fn,
             self.algo_options,
             self.model_options,
             self.can_interrupt,
