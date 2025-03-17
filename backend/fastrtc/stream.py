@@ -623,6 +623,7 @@ class Stream(WebRTCConnectionMixin):
         **kwargs,
     ):
         import atexit
+        import inspect
         import secrets
         import threading
         import time
@@ -646,9 +647,18 @@ class Stream(WebRTCConnectionMixin):
         )
         t.start()
 
-        url = setup_tunnel(
-            host, port, share_token=secrets.token_urlsafe(32), share_server_address=None
-        )
+        # Check if setup_tunnel accepts share_server_tls_certificate parameter
+        setup_tunnel_params = inspect.signature(setup_tunnel).parameters
+        tunnel_kwargs = {
+            "local_host": host,
+            "local_port": port,
+            "share_token": secrets.token_urlsafe(32),
+            "share_server_address": None,
+        }
+        if "share_server_tls_certificate" in setup_tunnel_params:
+            tunnel_kwargs["share_server_tls_certificate"] = None
+
+        url = setup_tunnel(**tunnel_kwargs)
         host = urllib.parse.urlparse(url).netloc
 
         URL = "https://api.fastrtc.org"
