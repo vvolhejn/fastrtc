@@ -150,7 +150,7 @@ The API is similar to `ReplyOnPause` with the addition of a `stop_words` paramet
 === "Code"
     ``` py
     import gradio as gr
-    from gradio_webrtc import WebRTC, StreamHandler
+    from fastrtc import StreamHandler
     from queue import Queue
 
     class EchoHandler(StreamHandler):
