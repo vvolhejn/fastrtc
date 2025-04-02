@@ -153,8 +153,7 @@ class WebSocketHandler:
                     await self.set_handler(self.stream_id, self)
                 elif message["event"] == "stop":
                     self.quit.set()
-                    self.clean_up(cast(str, self.stream_id))
-                    return
+                    return  # Still runs the `finally` block
                 elif message["event"] == "ping":
                     await websocket.send_json({"event": "pong"})
         except WebSocketDisconnect:
@@ -171,6 +170,8 @@ class WebSocketHandler:
 
             if not was_disconnected:
                 await websocket.close()
+
+            self.clean_up(cast(str, self.stream_id))
 
     async def _emit_to_queue(self):
         try:
